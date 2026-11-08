@@ -1,2 +1,2 @@
 # Sweety
-Blood Sugarl Tracking
+Blood Sugar Tracking
