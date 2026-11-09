@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 const { getTodayString } = require('../middleware/validate');
 
-async function seed() {
+async function seed({ shouldExit = false } = {}) {
   console.log('🌱 Starting Sweety database seed...');
   try {
     // Ensure tables exist
@@ -71,7 +71,6 @@ async function seed() {
       const dateStr = `${year}-${month}-${day}`;
 
       for (const slot of slots) {
-        // Random variance to generate realistic numbers between 75 and 200 mg/dl
         const delta = Math.floor(Math.random() * (slot.variance * 2 + 1)) - slot.variance;
         const value = Math.max(70, Math.min(260, slot.base + delta));
         const note = slot.notes[Math.floor(Math.random() * slot.notes.length)];
@@ -90,15 +89,19 @@ async function seed() {
     console.log(`   Patient: demo@sweety.app / password123`);
     console.log(`   Doctor:  doctor@sweety.app / password123`);
     console.log('🎉 Database seeding complete.');
-    process.exit(0);
+    if (shouldExit) {
+      process.exit(0);
+    }
   } catch (err) {
     console.error('❌ Seeding failed:', err);
-    process.exit(1);
+    if (shouldExit) {
+      process.exit(1);
+    }
   }
 }
 
 if (require.main === module) {
-  seed();
+  seed({ shouldExit: true });
 }
 
 module.exports = seed;
